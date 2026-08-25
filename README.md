@@ -1,6 +1,6 @@
 # MatrixClassDemo
 
-Simple sequential matrix class using `double` values.
+Simple sequential matrix class with a configurable element type.
 
 ## Build and test
 
@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
     MatrixClassDemo
     GIT_REPOSITORY https://github.com/CSE-625-Fall-2026/MatrixClassDemo.git
-    GIT_TAG v1.0.0
+    GIT_TAG v2.0.0
 )
 FetchContent_MakeAvailable(MatrixClassDemo)
 
@@ -29,6 +29,10 @@ target_link_libraries(your_target PRIVATE MatrixClassDemo::matrix)
 ```cpp
 #include <matrix/Matrix.hpp>
 
-matrix::Matrix value(2, 3);
+matrix::Matrix<double> value(2, 3);
 value.set(0, 0, 42.0);
 ```
+
+The element type must support the operations used by the matrix operation. For
+example, addition requires `+=`, subtraction requires `-=`, and multiplication
+requires multiplication and `+=`.

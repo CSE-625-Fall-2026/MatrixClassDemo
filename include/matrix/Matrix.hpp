@@ -5,10 +5,11 @@
 
 namespace matrix {
 
+template<typename T>
 class Matrix {
 public:
     using size_type = std::size_t;
-    using value_type = double;
+    using value_type = T;
 
     Matrix() = default;
     Matrix(size_type rows, size_type cols);
@@ -41,8 +42,8 @@ public:
     Matrix& operator-=(const Matrix& rhs);
     Matrix& operator*=(const Matrix& rhs);
 
-    [[nodiscard]] bool operator==(const Matrix& rhs) const noexcept;
-    [[nodiscard]] bool operator!=(const Matrix& rhs) const noexcept;
+    [[nodiscard]] bool operator==(const Matrix& rhs) const;
+    [[nodiscard]] bool operator!=(const Matrix& rhs) const;
 
 private:
     size_type rows_{0};
@@ -58,5 +59,7 @@ private:
 };
 
 }
+
+#include "matrix/Matrix.tpp"
 
 #endif
