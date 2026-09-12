@@ -157,6 +157,29 @@ const typename Matrix<T>::value_type& Matrix<T>::at(
 }
 
 template<typename T>
+Matrix<T> Matrix<T>::augment(const Matrix& rhs) const {
+    requireInitialized();
+    rhs.requireInitialized();
+    if (rows_ != rhs.rows_) {
+        throw std::invalid_argument("augmented matrices must have the same number of rows");
+    }
+    if (cols_ > std::numeric_limits<size_type>::max() - rhs.cols_) {
+        throw std::length_error("augmented matrix has too many columns");
+    }
+
+    Matrix result(rows_, cols_ + rhs.cols_);
+    for (size_type row = 0; row < rows_; ++row) {
+        for (size_type col = 0; col < cols_; ++col) {
+            result.set(row, col, get(row, col));
+        }
+        for (size_type col = 0; col < rhs.cols_; ++col) {
+            result.set(row, cols_ + col, rhs.get(row, col));
+        }
+    }
+    return result;
+}
+
+template<typename T>
 Matrix<T> Matrix<T>::operator+(const Matrix& rhs) const {
     Matrix result(*this);
     result += rhs;

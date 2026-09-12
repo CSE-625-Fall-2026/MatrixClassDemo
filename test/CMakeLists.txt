@@ -13,7 +13,7 @@ if(NOT GTest_FOUND)
     FetchContent_MakeAvailable(googletest)
 endif()
 
-add_executable(matrix_tests MatrixTests.cpp)
+add_executable(matrix_tests MatrixTests.cpp AugmentTests.cpp)
 target_link_libraries(matrix_tests PRIVATE MatrixClassDemo::matrix GTest::gtest_main)
 
 include(GoogleTest)

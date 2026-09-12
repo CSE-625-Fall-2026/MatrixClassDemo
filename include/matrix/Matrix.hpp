@@ -34,6 +34,8 @@ public:
     value_type& at(size_type row, size_type col);
     const value_type& at(size_type row, size_type col) const;
 
+    [[nodiscard]] Matrix augment(const Matrix& rhs) const;
+
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix& rhs) const;
     Matrix operator*(const Matrix& rhs) const;
