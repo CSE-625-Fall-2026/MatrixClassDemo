@@ -180,6 +180,33 @@ Matrix<T> Matrix<T>::augment(const Matrix& rhs) const {
 }
 
 template<typename T>
+Matrix<T> Matrix<T>::power(int exp) const {
+    requireInitialized();
+    if (rows_ != cols_) {
+        throw std::invalid_argument("matrix powers require a square matrix");
+    }
+    if (exp < 0) {
+        throw std::invalid_argument("matrix exponent must be nonnegative");
+    }
+
+    Matrix result(rows_, cols_);
+    for (size_type row = 0; row < rows_; ++row) {
+        result.set(row, row, value_type{1});
+    }
+    Matrix factor(*this);
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result *= factor;
+        }
+        exp /= 2;
+        if (exp > 0) {
+            factor *= factor;
+        }
+    }
+    return result;
+}
+
+template<typename T>
 Matrix<T> Matrix<T>::operator+(const Matrix& rhs) const {
     Matrix result(*this);
     result += rhs;

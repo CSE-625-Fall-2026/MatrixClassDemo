@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
     MatrixClassDemo
     GIT_REPOSITORY https://github.com/CSE-625-Fall-2026/MatrixClassDemo.git
-    GIT_TAG v2.1.0
+    GIT_TAG v2.2.0
 )
 FetchContent_MakeAvailable(MatrixClassDemo)
 
@@ -47,9 +47,21 @@ Both matrices must be initialized and have the same number of rows. The result
 copies every column of `a`, followed by every column of `b`, into one matrix.
 Neither input changes.
 
+## Powers
+
+```cpp
+auto fifth = a.power(5);
+auto identity = a.power(0);
+```
+
+The matrix must be initialized and square. Successive squaring computes a new
+matrix using logarithmically many matrix multiplications. Negative exponents
+throw `std::invalid_argument`; the original matrix is unchanged.
+
 ## Versions
 
 | Version | Addition |
 | --- | --- |
+| `v2.2.0` | `power(int exp)` using successive squaring |
 | `v2.1.0` | `augment()` and a workflow that runs all unit tests on every push |
 | `v2.0.0` | Templated matrix arithmetic |
