@@ -36,6 +36,7 @@ public:
 
     [[nodiscard]] Matrix augment(const Matrix& rhs) const;
     [[nodiscard]] Matrix power(int exp) const;
+    [[nodiscard]] Matrix rref() const;
 
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix& rhs) const;
@@ -56,6 +57,7 @@ private:
 
     static value_type** allocateRows(size_type rows, size_type cols);
     static void deleteRows(value_type** entries, size_type rows) noexcept;
+    static value_type divide(const value_type& numerator, const value_type& denominator);
     void swap(Matrix& other) noexcept;
     void requireInitialized() const;
     void requireSameDimensions(const Matrix& rhs) const;

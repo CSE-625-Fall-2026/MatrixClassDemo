@@ -1,5 +1,6 @@
 #include <limits>
 #include <stdexcept>
+#include <type_traits>
 #include <utility>
 
 namespace matrix {
@@ -204,6 +205,60 @@ Matrix<T> Matrix<T>::power(int exp) const {
         }
     }
     return result;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::rref() const {
+    requireInitialized();
+    Matrix result(*this);
+    size_type pivotRow = 0;
+    for (size_type col = 0; col < cols_ && pivotRow < rows_; ++col) {
+        size_type pivot = pivotRow;
+        while (pivot < rows_ && result.get(pivot, col) == value_type{}) {
+            ++pivot;
+        }
+        if (pivot == rows_) {
+            continue;
+        }
+        std::swap(result.entries_[pivotRow], result.entries_[pivot]);
+
+        const value_type divisor = result.get(pivotRow, col);
+        for (size_type j = col + 1; j < cols_; ++j) {
+            result.set(pivotRow, j, divide(result.get(pivotRow, j), divisor));
+        }
+        result.set(pivotRow, col, value_type{1});
+
+        for (size_type row = 0; row < rows_; ++row) {
+            if (row == pivotRow) {
+                continue;
+            }
+            const value_type factor = result.get(row, col);
+            for (size_type j = col + 1; j < cols_; ++j) {
+                result.at(row, j) -= factor * result.get(pivotRow, j);
+            }
+            result.set(row, col, value_type{});
+        }
+        ++pivotRow;
+    }
+    return result;
+}
+
+template<typename T>
+typename Matrix<T>::value_type Matrix<T>::divide(
+    const value_type& numerator, const value_type& denominator
+) {
+    if constexpr (std::is_integral_v<T> && std::is_signed_v<T>) {
+        if (numerator == std::numeric_limits<T>::lowest() && denominator == T{-1}) {
+            throw std::overflow_error("matrix division exceeds the element type's range");
+        }
+    }
+    const value_type quotient = numerator / denominator;
+    if constexpr (!std::is_floating_point_v<T>) {
+        if (quotient * denominator != numerator) {
+            throw std::domain_error("matrix division requires fractions; use double or RationalNumber");
+        }
+    }
+    return quotient;
 }
 
 template<typename T>

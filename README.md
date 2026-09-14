@@ -58,6 +58,25 @@ The matrix must be initialized and square. Successive squaring computes a new
 matrix using logarithmically many matrix multiplications. Negative exponents
 throw `std::invalid_argument`; the original matrix is unchanged.
 
+## Reduced row echelon form
+
+```cpp
+auto reduced = a.augment(b).rref();
+```
+
+`rref()` returns a new matrix using basic Gauss-Jordan elimination: find a
+nonzero pivot, swap rows if needed, make the pivot one, and eliminate that
+column from the other rows. It works with rectangular matrices and zero rows.
+
+Use `double`, `RationalNumber<int>`, or `RationalNumber<ArbitraryInteger>` when
+fractions are needed. Integer types throw `std::domain_error` if an intermediate
+division would truncate. The implementation uses exact zero comparisons;
+floating-point roundoff can affect pivot selection. Rational types give exact
+results within the range of their underlying integer type.
+
+Tests also fetch ArbitraryInteger and RationalNumber to check these template
+types. Applications only need to fetch and link the number libraries they use.
+
 ## Versions
 
 | Version | Addition |
