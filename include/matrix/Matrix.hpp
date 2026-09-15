@@ -2,6 +2,7 @@
 #define MATRIX_CLASS_DEMO_MATRIX_HPP
 
 #include <cstddef>
+#include <tuple>
 
 namespace matrix {
 
@@ -37,6 +38,7 @@ public:
     [[nodiscard]] Matrix augment(const Matrix& rhs) const;
     [[nodiscard]] Matrix power(int exp) const;
     [[nodiscard]] Matrix rref() const;
+    [[nodiscard]] std::tuple<Matrix, Matrix> lu() const;
 
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix& rhs) const;

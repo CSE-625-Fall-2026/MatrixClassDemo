@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
     MatrixClassDemo
     GIT_REPOSITORY https://github.com/CSE-625-Fall-2026/MatrixClassDemo.git
-    GIT_TAG v2.2.0
+    GIT_TAG v3.0.0
 )
 FetchContent_MakeAvailable(MatrixClassDemo)
 
@@ -74,13 +74,28 @@ division would truncate. The implementation uses exact zero comparisons;
 floating-point roundoff can affect pivot selection. Rational types give exact
 results within the range of their underlying integer type.
 
-Tests also fetch ArbitraryInteger and RationalNumber to check these template
-types. Applications only need to fetch and link the number libraries they use.
+## LU decomposition
+
+```cpp
+auto [L, U] = a.lu(); // std::tuple<Matrix<T>, Matrix<T>>; a = L * U
+```
+
+For an initialized square matrix, `lu()` returns a lower triangular matrix with
+ones on its diagonal and an upper triangular matrix. It copies the input and
+uses ordinary elimination, storing the multipliers in `L`.
+
+This simple version does not pivot: it throws `std::domain_error` when a row
+swap is required. A zero pivot with only zeros below it needs no elimination.
+The same division and floating-point limitations as `rref()` apply.
+
+Applications using custom number types must include their headers and link
+their libraries. MatrixClassDemo itself does not depend on those libraries.
 
 ## Versions
 
 | Version | Addition |
 | --- | --- |
+| `v3.0.0` | `rref()` and `lu()` returning new matrices |
 | `v2.2.0` | `power(int exp)` using successive squaring |
 | `v2.1.0` | `augment()` and a workflow that runs all unit tests on every push |
 | `v2.0.0` | Templated matrix arithmetic |

@@ -13,29 +13,10 @@ if(NOT GTest_FOUND)
     FetchContent_MakeAvailable(googletest)
 endif()
 
-include(FetchContent)
-if(NOT TARGET ArbitraryInteger::ArbitraryInteger)
-    FetchContent_Declare(arbitrary_integer
-        GIT_REPOSITORY https://github.com/AbstractClassroom-CPP/ArbitraryInteger.git
-        GIT_TAG eaee528f09a32231ef9841dd2a2c90d2a6ece234 # v4.0.0
-    )
-    FetchContent_MakeAvailable(arbitrary_integer)
-endif()
-if(NOT TARGET RationalNumber::RationalNumber)
-    FetchContent_Declare(rational_number
-        GIT_REPOSITORY https://github.com/AbstractClassroom-CPP/RationalNumber.git
-        GIT_TAG c9d841504443b92c476527170d5a1ba4b9ab16cb # v5.0.0
-    )
-    FetchContent_MakeAvailable(rational_number)
-endif()
-
 add_executable(matrix_tests
-    MatrixTests.cpp AugmentTests.cpp PowerTests.cpp RrefTests.cpp NumberTypeTests.cpp
+    MatrixTests.cpp AugmentTests.cpp PowerTests.cpp RrefTests.cpp LuTests.cpp
 )
-target_link_libraries(matrix_tests PRIVATE
-    MatrixClassDemo::matrix GTest::gtest_main
-    ArbitraryInteger::ArbitraryInteger RationalNumber::RationalNumber
-)
+target_link_libraries(matrix_tests PRIVATE MatrixClassDemo::matrix GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(matrix_tests)

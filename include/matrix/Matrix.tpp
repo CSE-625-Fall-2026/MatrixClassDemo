@@ -244,6 +244,39 @@ Matrix<T> Matrix<T>::rref() const {
 }
 
 template<typename T>
+std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::lu() const {
+    requireInitialized();
+    if (rows_ != cols_) {
+        throw std::invalid_argument("LU decomposition requires a square matrix");
+    }
+    Matrix lower(rows_, cols_);
+    Matrix upper(*this);
+    for (size_type row = 0; row < rows_; ++row) {
+        lower.set(row, row, value_type{1});
+    }
+
+    for (size_type col = 0; col < cols_; ++col) {
+        if (upper.get(col, col) == value_type{}) {
+            for (size_type row = col + 1; row < rows_; ++row) {
+                if (upper.get(row, col) != value_type{}) {
+                    throw std::domain_error("LU decomposition requires a row swap");
+                }
+            }
+            continue;
+        }
+        for (size_type row = col + 1; row < rows_; ++row) {
+            const value_type factor = divide(upper.get(row, col), upper.get(col, col));
+            lower.set(row, col, factor);
+            upper.set(row, col, value_type{});
+            for (size_type j = col + 1; j < cols_; ++j) {
+                upper.at(row, j) -= factor * upper.get(col, j);
+            }
+        }
+    }
+    return std::make_tuple(std::move(lower), std::move(upper));
+}
+
+template<typename T>
 typename Matrix<T>::value_type Matrix<T>::divide(
     const value_type& numerator, const value_type& denominator
 ) {
