@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(
     MatrixClassDemo
-    VERSION 3.0.0
+    VERSION 3.1.0
     DESCRIPTION "A small matrix class for teaching sequential implementations"
     LANGUAGES CXX
 )

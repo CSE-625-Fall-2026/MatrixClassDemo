@@ -14,7 +14,7 @@ if(NOT GTest_FOUND)
 endif()
 
 add_executable(matrix_tests
-    MatrixTests.cpp AugmentTests.cpp PowerTests.cpp RrefTests.cpp LuTests.cpp
+    MatrixTests.cpp AugmentTests.cpp PowerTests.cpp RrefTests.cpp LuTests.cpp PivotedLuTests.cpp
 )
 target_link_libraries(matrix_tests PRIVATE MatrixClassDemo::matrix GTest::gtest_main)
 

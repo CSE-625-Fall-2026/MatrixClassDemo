@@ -39,6 +39,7 @@ public:
     [[nodiscard]] Matrix power(int exp) const;
     [[nodiscard]] Matrix rref() const;
     [[nodiscard]] std::tuple<Matrix, Matrix> lu() const;
+    [[nodiscard]] std::tuple<Matrix, Matrix, Matrix> luPartialPivoting() const;
 
     Matrix operator+(const Matrix& rhs) const;
     Matrix operator-(const Matrix& rhs) const;

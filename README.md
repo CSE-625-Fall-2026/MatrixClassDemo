@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
     MatrixClassDemo
     GIT_REPOSITORY https://github.com/CSE-625-Fall-2026/MatrixClassDemo.git
-    GIT_TAG v3.0.0
+    GIT_TAG v3.1.0
 )
 FetchContent_MakeAvailable(MatrixClassDemo)
 
@@ -88,6 +88,22 @@ This simple version does not pivot: it throws `std::domain_error` when a row
 swap is required. A zero pivot with only zeros below it needs no elimination.
 The same division and floating-point limitations as `rref()` apply.
 
+## LU with partial pivoting
+
+```cpp
+auto [P, L, U] = a.luPartialPivoting(); // P * a = L * U
+auto permutedB = P * b;
+```
+
+At each step, choose the largest absolute entry in the remaining pivot column
+and swap that row into place. Previously computed multipliers in `L` move with
+the swapped rows. Solve `L*y = P*b`, then `U*x = y`.
+
+The method returns new matrices and leaves `a` unchanged. It requires a square
+matrix and an ordered number type; the same division checks as `lu()` apply.
+A singular matrix can still have a factorization, but a zero diagonal in `U`
+prevents the usual back substitution from producing a unique solution.
+
 Applications using custom number types must include their headers and link
 their libraries. MatrixClassDemo itself does not depend on those libraries.
 
@@ -95,6 +111,7 @@ their libraries. MatrixClassDemo itself does not depend on those libraries.
 
 | Version | Addition |
 | --- | --- |
+| `v3.1.0` | `luPartialPivoting()` returning `(P, L, U)` |
 | `v3.0.0` | `rref()` and `lu()` returning new matrices |
 | `v2.2.0` | `power(int exp)` using successive squaring |
 | `v2.1.0` | `augment()` and a workflow that runs all unit tests on every push |

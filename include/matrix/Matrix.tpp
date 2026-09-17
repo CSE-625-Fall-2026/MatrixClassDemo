@@ -277,6 +277,56 @@ std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::lu() const {
 }
 
 template<typename T>
+std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::luPartialPivoting() const {
+    requireInitialized();
+    if (rows_ != cols_) {
+        throw std::invalid_argument("LU decomposition requires a square matrix");
+    }
+    Matrix permutation(rows_, cols_);
+    Matrix lower(rows_, cols_);
+    Matrix upper(*this);
+    for (size_type row = 0; row < rows_; ++row) {
+        permutation.set(row, row, value_type{1});
+        lower.set(row, row, value_type{1});
+    }
+
+    // Compare absolute magnitudes without overflowing on the smallest signed integer.
+    const auto largerMagnitude = [](const value_type& a, const value_type& b) {
+        if (a < value_type{}) {
+            return b < value_type{} ? a < b : a < -b;
+        }
+        return b < value_type{} ? -a < b : a > b;
+    };
+
+    for (size_type col = 0; col < cols_; ++col) {
+        size_type pivot = col;
+        for (size_type row = col + 1; row < rows_; ++row) {
+            if (largerMagnitude(upper.get(row, col), upper.get(pivot, col))) {
+                pivot = row;
+            }
+        }
+        if (upper.get(pivot, col) == value_type{}) {
+            continue; // The remaining column is already zero.
+        }
+        std::swap(upper.entries_[col], upper.entries_[pivot]);
+        std::swap(permutation.entries_[col], permutation.entries_[pivot]);
+        for (size_type j = 0; j < col; ++j) {
+            std::swap(lower.at(col, j), lower.at(pivot, j));
+        }
+
+        for (size_type row = col + 1; row < rows_; ++row) {
+            const value_type factor = divide(upper.get(row, col), upper.get(col, col));
+            lower.set(row, col, factor);
+            upper.set(row, col, value_type{});
+            for (size_type j = col + 1; j < cols_; ++j) {
+                upper.at(row, j) -= factor * upper.get(col, j);
+            }
+        }
+    }
+    return std::make_tuple(std::move(permutation), std::move(lower), std::move(upper));
+}
+
+template<typename T>
 typename Matrix<T>::value_type Matrix<T>::divide(
     const value_type& numerator, const value_type& denominator
 ) {
